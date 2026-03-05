@@ -1,13 +1,27 @@
 import fastify from 'fastify'
-import { PrismaClient } from '@prisma/client'
-
+import { z } from 'zod'
+import { prisma } from './lib/prisma.js'
 export const app = fastify()
 
-const prisma = new PrismaClient()
+app.post('/users', async (request, reply) => {
+  const registerBodySchema = z.object({
+    name: z.string(),
+    email: z.email(),
+    password: z.string().min(6),
+  })
 
-prisma.user.create({
-  data: {
-    name: 'Renan',
-    email: 'renan@example.com',
-  },
+  // Faz a validação com o parse, caso não de certo, o código para por aqui
+  const { name, email, password } = registerBodySchema.parse(request.body)
+
+  // Pegamos os dados, agora vamos tentar realizar a criação do usuário
+  await prisma.user.create({
+    data: {
+      name,
+      email,
+      password_hash: password,
+    },
+  })
+
+  // Retornamos com status 201
+  return reply.status(201).send()
 })
