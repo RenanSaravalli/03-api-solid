@@ -9,6 +9,7 @@ import { z } from 'zod'
 // Arqui criamos o schema das variáveis de ambiente (Oq esperamos receber)
 const envSchema = z.object({
   NODE_ENV: z.enum(['dev', 'test', 'production']).default('dev'),
+  DATABASE_URL: z.url(),
   PORT: z.coerce.number().default(3333),
 })
 
