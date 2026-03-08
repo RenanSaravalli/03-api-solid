@@ -1,5 +1,4 @@
-import { prisma } from '@/lib/prisma.js'
-
+import type { UsersRepository } from '@/repositories/users-repository.js'
 import { hash } from 'bcryptjs'
 
 // Esse será o arquivo que vamos utilizar para criar o usuário na base
@@ -14,7 +13,7 @@ interface RegisterUserCaseRequest {
 // Classe para trabalhar com INVERSÃO de DEPENDENCIA (SOLID)
 // A qual vamos passar o repository no construtor da classe
 export class RegisterUserCase {
-  constructor(private usersRepository: any) {}
+  constructor(private usersRepository: UsersRepository) {}
 
   // Função Base que vai criar o usuário
   async execute({ name, email, password }: RegisterUserCaseRequest) {
@@ -25,11 +24,7 @@ export class RegisterUserCase {
     // é legal também antes de cadastrar o usuário, verificar se aquele email já existe vamos retornar um erro mais amigável
     // Busando usuário pelo método do prisma findUnique (o campo que passarmos deve ser unique ou chave primária)
 
-    const userWithSameEmail = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    })
+    const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
     // caso exista
     if (userWithSameEmail) {
