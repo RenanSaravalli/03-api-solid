@@ -1,6 +1,7 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
 import z from 'zod'
-import { registerUseCase } from '@/use-cases/register.js'
+import { RegisterUserCase } from '@/use-cases/register.js'
+import { PrismaUserRepository } from '@/repositories/prisma-users-repository.js'
 
 // controller criar usuário
 
@@ -16,7 +17,11 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
   // aqui vamos chamar nosso método de criar o usuário em nossa base, passamos pelo try catch pois damos um erro caso o email do usuário já exista
   try {
-    await registerUseCase({
+    const prismaUsersRepository = new PrismaUserRepository()
+    // instanciando nossa classe de service
+    const registerUseCase = new RegisterUserCase(prismaUsersRepository)
+
+    await registerUseCase.execute({
       name,
       email,
       password,
