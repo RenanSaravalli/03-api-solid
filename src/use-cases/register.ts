@@ -1,5 +1,6 @@
 import type { UsersRepository } from '@/repositories/users-repository.js'
 import { hash } from 'bcryptjs'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error.js'
 
 // Esse será o arquivo que vamos utilizar para criar o usuário na base
 
@@ -28,7 +29,8 @@ export class RegisterUserCase {
 
     // caso exista
     if (userWithSameEmail) {
-      throw new Error('Email already exists.')
+      // Agora passamos a classe de erro que criamos
+      throw new UserAlreadyExistsError()
       // mensagem 409 é de conflito
     }
 
