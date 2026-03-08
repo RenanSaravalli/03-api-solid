@@ -1,7 +1,7 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
 import z from 'zod'
 import { RegisterUserCase } from '@/use-cases/register.js'
-import { PrismaUserRepository } from '@/repositories/prisma-users-repository.js'
+import { PrismaUserRepository } from '@/repositories/prisma/prisma-users-repository.js'
 
 // controller criar usuário
 
